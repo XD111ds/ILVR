@@ -8,7 +8,7 @@
 ---
 
 ## 📢 News
-* **[2024-xx-xx]** The repository is created.
+* **[2025-12-5]** The repository is created.
 * **[Coming Soon]** The paper will be released on arXiv soon.
 * **[Coming Soon]** Code and checkpoints are being prepared for release.
 

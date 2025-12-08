@@ -138,17 +138,6 @@ If you find this project or the ILVR framework useful, please cite our paper:
 }
 ```
 
-Since we use the **CoMT dataset**, please also kindly cite the CoMT paper:
-
-```bibtex
-@article{comt2024benchmark,
-  title={CoMT: A Novel Benchmark for Chain of Multi-modal Thought on Large Vision-Language Models},
-  author={Wang, Siyuan and others},
-  journal={arXiv preprint arXiv:2412.12932},
-  year={2024}
-}
-```
-
 ## 🙏 Acknowledgements
 This codebase is built upon [Qwen-VL](https://github.com/QwenLM/Qwen-VL) 、 [Transformers](https://github.com/huggingface/transformers) and [Mirage](https://github.com/UMass-Embodied-AGI/Mirage). We thank the authors for their open-source contributions.
 

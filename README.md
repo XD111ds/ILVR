@@ -1,7 +1,6 @@
 # ILVR: Interleaved Latent Visual Reasoning with Selective Perceptual Modeling
 
 [![arXiv](https://img.shields.io/badge/arXiv-2512.05665-b31b1b.svg)](https://arxiv.org/abs/2512.05665)
-[![Dataset](https://img.shields.io/badge/Dataset-CoMT-yellow)](https://huggingface.co/datasets/shuai22/comt)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 **Authors:** Shuai Dong, Siyuan Wang, Xingyu Liu, Zhongyu Wei

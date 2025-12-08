@@ -130,11 +130,14 @@ bash run_training.sh
 If you find this project or the ILVR framework useful, please cite our paper:
 
 ```bibtex
-@article{dong2025ilvr,
-  title={ILVR: Interleaved Latent Visual Reasoning with Selective Perceptual Modeling},
-  author={Dong, Shuai and Wang, Siyuan and Liu, Xingyu and Wei, Zhongyu},
-  journal={arXiv preprint arXiv:2512.05665},
-  year={2025}
+@misc{dong2025interleavedlatentvisualreasoning,
+      title={Interleaved Latent Visual Reasoning with Selective Perceptual Modeling}, 
+      author={Shuai Dong and Siyuan Wang and Xingyu Liu and Zhongyu Wei},
+      year={2025},
+      eprint={2512.05665},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2512.05665}, 
 }
 ```
 

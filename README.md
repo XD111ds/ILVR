@@ -19,6 +19,7 @@
 ---
 
 ## 📢 News
+* **[2026-01-20]** 🚀 We have released the evaluation scripts (`eval.sh` and `eval.py`) and uploaded the model checkpoints to our Hugging Face repository: [shuai22/comt_ckpt](https://huggingface.co/shuai22/comt_ckpt).
 * **[2025-12-08]** The code is released.
 * **[2025-12-08]** The paper is released on [arXiv](https://arxiv.org/abs/2512.05665).
 

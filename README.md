@@ -1,4 +1,4 @@
-# [ACL'26] ILVR: Interleaved Latent Visual Reasoning with Selective Perceptual Modeling
+# [ACL 2026 Oral] ILVR: Interleaved Latent Visual Reasoning with Selective Perceptual Modeling
 
 [![arXiv](https://img.shields.io/badge/arXiv-2512.05665-b31b1b.svg)](https://arxiv.org/abs/2512.05665)
 [![ACL 2026](https://img.shields.io/badge/ACL%202026-Accepted-success)]()
@@ -8,7 +8,7 @@
 
 **Affiliations:** China University of Geosciences, Wuhan; Shanghai Innovation Institute; University of Southern California; Fudan University; Zhejiang University; Shanghai Jiao Tong University.
 
-**Venue:** Accepted to **ACL 2026**.
+**Venue:** ACL 2026 (**Oral Presentation**).
 
 ---
 
@@ -22,6 +22,7 @@
 ---
 
 ## 📢 News
+* **[2026-05-29]** 🎉 **ILVR** has been selected for an **Oral Presentation** at ACL 2026.
 * **[2026-04-08]** 🎉 **ILVR** has been accepted to **ACL 2026**.
 * **[2026-01-20]** 🚀 We have released the evaluation scripts (`eval.sh` and `eval.py`) and uploaded the model checkpoints to our Hugging Face repository: [shuai22/comt_ckpt](https://huggingface.co/shuai22/comt_ckpt).
 * **[2025-12-08]** The code is released.

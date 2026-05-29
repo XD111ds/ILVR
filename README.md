@@ -1,4 +1,4 @@
-# [ACL 2026 Oral] ILVR: Interleaved Latent Visual Reasoning with Selective Perceptual Modeling
+# [ACL'26 Oral] ILVR: Interleaved Latent Visual Reasoning with Selective Perceptual Modeling
 
 [![arXiv](https://img.shields.io/badge/arXiv-2512.05665-b31b1b.svg)](https://arxiv.org/abs/2512.05665)
 [![ACL 2026](https://img.shields.io/badge/ACL%202026-Accepted-success)]()

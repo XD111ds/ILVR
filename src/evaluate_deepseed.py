@@ -25,7 +25,7 @@ ACTION_MAP = {
 
 
 BASE_MODEL_ID = "Qwen/Qwen2.5-VL-7B-Instruct"  
-BASE_DATASET_DIR = '/mnt/public/users/dongshuai/LVR/ILVR_PUB/COMT'
+BASE_DATASET_DIR = ''
 
 
 def get_eval_args():
@@ -109,30 +109,48 @@ def open_images(paths: List[str]) -> List[Image.Image]:
 _yes_set = {"yes", "true", "a"}
 _no_set  = {"no", "false", "b"}
 
+def _clean_answer_span(cand: str) -> str:
+    # Keep only the first line, drop special tokens, then peel surrounding
+    # markdown/quotes/brackets and trailing punctuation (e.g. "**2**", "2.")
+    cand = re.split(r"[\n\r]", (cand or "").strip())[0]
+    cand = _strip_special_tokens(cand)
+    cand = re.sub(r"^[\s\*_`'\"“‘(\[{【]+", "", cand)
+    cand = re.sub(r"[\s\*_`'\"”’)\]}】.。,，!！?？;；:：]+$", "", cand)
+    return cand.strip()
+
 def extract_final_answer(text: str) -> str:
 
-    s = text.strip()
+    s = _strip_special_tokens(text or "").strip()
+
+    # 1) \boxed{...} (take the last one)
+    boxed = re.findall(r"\\boxed\{([^{}]*)\}", s)
+    if boxed:
+        return _clean_answer_span(boxed[-1])
+
+    # 2) "final answer (is)(:) XXX" / "answer (is)(:) XXX" — take the LAST
+    #    occurrence, since the conclusion appears at the end of the response
     patterns = [
-        r"final\s*answer\s*(?:is)?\s*[:：]\s*(.+)",
+        r"final\s*answer\s*(?:is)?\s*[:：]?\s*(.+)",
         r"answer\s*(?:is)?\s*[:：]\s*(.+)"
     ]
     for pat in patterns:
-        m = re.search(pat, s, flags=re.IGNORECASE)
-        if m:
-            cand = m.group(1).strip()
-            cand = re.split(r"[\n\r]", cand)[0]
-            return cand
+        matches = list(re.finditer(pat, s, flags=re.IGNORECASE))
+        if matches:
+            cand = _clean_answer_span(matches[-1].group(1))
+            if cand:
+                return cand
     tokens = re.findall(r"[A-Za-z]+", s.lower())
     only = [t for t in tokens if t in (_yes_set | _no_set)]
     if len(only) == 1:
         return only[0].capitalize() if only[0] in {"yes", "no"} else only[0]
-    return s
+    return _clean_answer_span(s)
 
 def _strip_special_tokens(s: str) -> str:
     # Common end/special tokens, extend if necessary
     end_markers = [
         "<|im_end|>", "<|endoftext|>", "<|eot_id|>", "<|end|>",
-        "</s>", "<s>", "[/INST]", "[INST]"
+        "</s>", "<s>", "[/INST]", "[INST]",
+        "<|latent_start|>", "<|latent_end|>", "<|latent_pad|>",
     ]
     for m in end_markers:
         s = s.replace(m, "")
@@ -165,13 +183,21 @@ def extract_assistant_content(text: str) -> str:
 
 
 def normalize_for_match(ans: str) -> str:
-    a = ans.strip()
+    a = _clean_answer_span(ans)
     low = a.lower()
     if low in _yes_set:
         return "Yes"
     if low in _no_set:
         return "No"
-    return a
+    # Numeric tolerance: "2", "2.0", " 2 " all normalize to the same value
+    try:
+        f = float(a.replace(",", ""))
+        if f == int(f):
+            return str(int(f))
+        return str(f)
+    except (ValueError, OverflowError):
+        pass
+    return low
 
 def run_one_example(model, processor, sample: Dict[str, Any], gen_kwargs: Dict[str, Any]) -> Dict[str, Any]:
     text_input = sample.get("text_input", "")
@@ -213,12 +239,17 @@ def run_one_example(model, processor, sample: Dict[str, Any], gen_kwargs: Dict[s
         out_ids = model.generate(
             **inputs,
             **gen_kwargs,
+            logits_processor=lp,
             tokenizer=processor.tokenizer,
         )
     out_text = processor.batch_decode(out_ids, skip_special_tokens=False)[0].strip()
 
-    extracted = extract_final_answer(out_text)
-    return {"raw_output": out_text, "extracted_final_answer": extracted}
+    # Extract the answer from the assistant's segment only — running the
+    # regex over the full decoded text (prompt included) can match text in
+    # the user prompt and keeps trailing special tokens like <|im_end|>.
+    assistant_only = extract_assistant_content(out_text)
+    extracted = extract_final_answer(assistant_only)
+    return {"raw_output": out_text, "assistant_only": assistant_only, "extracted_final_answer": extracted}
 
 def main():
     args = get_eval_args()
@@ -256,12 +287,12 @@ def main():
         try:
             pred = run_one_example(model, processor, sample, gen_kwargs)
             out_text = pred["raw_output"]
-            assistant_only = extract_assistant_content(out_text)
+            assistant_only = pred["assistant_only"]
 
             if args.task_name == "vsp-spatial-planning-cot":
-                
+
                 map_desc = sample.get("map_desc", [])
-                path_str = extract_path_from_text(out_text)
+                path_str = extract_path_from_text(assistant_only)
                 sim = simulate_vsp(map_desc, path_str)
                 ok = bool(sim["success"])
                 if ok: success += 1
@@ -287,8 +318,9 @@ def main():
                 results.append({
                     "index": i,
                     "task_name": args.task_name,
-                    
+
                     "prediction": assistant_only,
+                    "extracted_final_answer": pred["extracted_final_answer"],
                     "gold_final_answer": gold,
                     "match": bool(ok)
                 })

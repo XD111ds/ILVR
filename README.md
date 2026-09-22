@@ -1,3 +1,5 @@
+
+
 # [ACL'26 Oral] ILVR: Interleaved Latent Visual Reasoning with Selective Perceptual Modeling
 
 [![arXiv](https://img.shields.io/badge/arXiv-2512.05665-b31b1b.svg)](https://arxiv.org/abs/2512.05665)
@@ -85,6 +87,8 @@ ILVR/
 └── README.md
 ```
 
+`eval.py` resolves relative image paths against its `BASE_DATASET_DIR` setting; set that setting to the directory that contains those relative paths.
+
 ### Data Format
 The dataset follows the JSONL format:
 - **text_input**: The question/instruction.
@@ -149,4 +153,3 @@ This codebase is built upon [Qwen-VL](https://github.com/QwenLM/Qwen-VL) 、 [Tr
 
 ## 📄 License
 This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
-
